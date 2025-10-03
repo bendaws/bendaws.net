@@ -4,6 +4,7 @@ MIT License
 */
 
 // Note: requires a div with the "editor" id.
+// Make sure you have one on your header webpage
 
 // Monaco Editor v0.2.9
 // (C) Microsoft
@@ -34,53 +35,26 @@ function loadParam(paramName, fallback) {
     return thing
 }
 
+let editor = null;
+
 const code_possible = loadParam("code", "// https://www.bendaws.net");
 const language = loadParam("language", "javascript");
 const theme = loadParam("theme", "vs-dark")
 
 let code = code_possible;
 
+const editorElement = document.getElementById("editor");
+
 require(["vs/editor/editor.main"], function () {
     // Create the editor with some sample JavaScript code
-    var editor = monaco.editor.create(document.getElementById("editor"), {
+    editor = monaco.editor.create(document.getElementById("editor"), {
         value: code,
         language: language,
         theme: theme,
     });
 
-    // Resize the editor when the window size changes
-    const editorElement = document.getElementById("editor");
-
     window.addEventListener("resize", () => editor.layout({
         width: editorElement.offsetWidth,
         height: editorElement.offsetHeight
     }));
-});
-
-async function openFile() {
-    try {
-        const [fileHandle] = await window.showOpenFilePicker({
-            types: [{
-            description: 'Source code',
-            accept: {
-                'text/plain': ['.*'],
-            },
-            }],
-            multiple: false,
-        });
-
-        const file = await fileHandle.getFile();
-        const content = await file.text();
-        
-        document.title = "Monaco Editor"
-        monaco.editor.getModel().setValue(content);
-    } catch (error) {
-        console.error('File picker cancelled or error:', error);
-    }
-}
-
-document.addEventListener('keydown', (event) => {
-    if (event.key == "O" && event.ctrlKey) {
-        openFile();
-    }
 });
