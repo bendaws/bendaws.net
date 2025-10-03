@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="utf-8" />
         <title>Monaco Editor</title>
         <link rel="icon" type="image/png" href="/resources/images/crane.png">
-        <link rel="stylesheet" href="/resources/css/main.css">
         <style>
             html, body {
                 height: 100%;
@@ -22,68 +20,9 @@
                 overflow: hidden;
             }
         </style>
-        </head>
+    </head>
     <body>
-
-    <div id="editor"></div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.29.1/min/vs/loader.min.js"></script>
-    <script>
-        function isValidURL(str) {
-            const urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
-            return urlRegex.test(str);
-        }
-
-        require.config({ paths: { "vs": "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.29.1/min/vs/" }});
-
-        window.MonacoEnvironment = {
-            getWorkerUrl: function(workerId, label) {
-                return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
-                    self.MonacoEnvironment = { baseUrl: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.29.1/min/" };
-                    importScripts("https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.29.1/min/vs/base/worker/workerMain.min.js");`
-                )}`;
-            }
-        };
-
-        const urlParams = new URLSearchParams(window.location.search);
-
-        function loadParam(paramName, fallback) {
-            var thing = urlParams.get(paramName)
-            if (thing == null)
-                thing = fallback;
-            return thing
-        }
-
-        const code_possible = loadParam("code", "// https://www.bendaws.net");
-        const language = loadParam("language", "javascript");
-        const theme = loadParam("theme", "vs-dark")
-
-        let code = code_possible;
-/*
-        if (isValidURL(code_possible)) {
-            try {
-                const status = await fetch(code_possible);
-                if (status.OK) {
-                    code = status.text();
-                }
-            } catch (error) {}
-        }
-*/
-        require(["vs/editor/editor.main"], function () {
-            // Create the editor with some sample JavaScript code
-            var editor = monaco.editor.create(document.getElementById("editor"), {
-                value: code,
-                language: language,
-                theme: theme,
-            });
-
-            // Resize the editor when the window size changes
-            const editorElement = document.getElementById("editor");
-            window.addEventListener("resize", () => editor.layout({
-                width: editorElement.offsetWidth,
-                height: editorElement.offsetHeight
-            }));
-        });
-    </script>
+        <div id="editor"></div>
+        <script src="/resources/webeditor.js"></script>
     </body>
 </html>
